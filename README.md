@@ -76,30 +76,7 @@ flowchart TD
     Proxy -->|"project-id.previews.*"| Previews
 ```
 
-### AI chat request flow
 
-```mermaid
-sequenceDiagram
-    actor U as User
-    participant GW as API Gateway
-    participant INT as Intelligence Service
-    participant ACC as Account Service
-    participant WS as Workspace Service
-    participant LLM as OpenAI
-    participant K as Kafka
-
-    U->>GW: Chat prompt + JWT
-    GW->>GW: Validate JWT
-    GW->>INT: Route request
-    INT->>ACC: Check AI usage limits (Feign + JWT)
-    INT->>WS: Fetch file tree / file contents (Feign + JWT)
-    INT->>LLM: Prompt + project context
-    LLM-->>INT: Generated code (streamed)
-    INT-->>U: Stream response to browser
-    INT->>K: Publish file-updates event
-    K->>WS: Consume event
-    WS->>WS: Persist files to MinIO, update preview
-```
 
 ---
 
